@@ -1,7 +1,12 @@
-require('dotenv').config();
-import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
+//dependencies
+const dotenv = require('dotenv');
+const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const connectDatabase = require('./config/database');
+
+//env config
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,4 +26,7 @@ io.on('connection', socket => {
 global.io = io;
 
 const PORT = Number(process.env.PORT) || 8080;
-httpServer.listen(PORT, () => console.log(`Server is alive on PORT:${PORT}`));
+httpServer.listen(PORT, async () => {
+  console.log(`Server is alive on PORT:${PORT}`);
+  await connectDatabase();
+});
