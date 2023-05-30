@@ -1,20 +1,10 @@
-//dependencies
-const dotenv = require('dotenv');
-const express = require('express');
-const { createServer } = require('http');
+const http = require('http');
 const { Server } = require('socket.io');
 const connectDatabase = require('./config/database');
-const apiRouter = require('./routes');
 const docsService = require('./services/docs.service');
+const app = require('./app');
 
-//env config
-dotenv.config();
-
-const app = express();
-const httpServer = createServer(app);
-
-//api routes
-app.use('/api', apiRouter);
+const httpServer = http.createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
