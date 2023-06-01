@@ -1,13 +1,29 @@
-import { nanoid } from 'nanoid';
-import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import useAuthCheck from './ hooks/useAuthCheck';
+import PrivateOutlet from './components/PrivateOutlet';
+import PublicOutlet from './components/PublicOutlet';
 import TextEditor from './components/TextEditor';
+import Docs from './pages/Docs';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
-  return (
+  const isAuthChecked = useAuthCheck();
+
+  return !isAuthChecked ? (
+    <div>Brewing Application</div>
+  ) : (
     <Router>
       <Routes>
-        <Route path="/" element={<Link to={`docs/${nanoid()}`}>Create New Doc</Link>}></Route>
-        <Route path="/docs/:docId" element={<TextEditor />}></Route>
+        {/* <Route path="/" element={<Link to={`docs/${nanoid()}`}>Create New Doc</Link>} /> */}
+        <Route path="/*" element={<PublicOutlet />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
+        <Route path="/*" element={<PrivateOutlet />}>
+          <Route path="docs/:docId" element={<TextEditor />} />
+          <Route path="docs/" element={<Docs />} />
+        </Route>
       </Routes>
     </Router>
   );
