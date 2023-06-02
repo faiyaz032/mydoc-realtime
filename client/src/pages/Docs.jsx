@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+import { Link } from 'react-router-dom';
 import useAuth from '../ hooks/useAuth';
 
 export default function Docs() {
@@ -12,6 +14,7 @@ export default function Docs() {
     <div>
       <button onClick={handleLogout}>Log out</button>
       <h1>All Docs</h1>
+      <Link to={`/docs/${nanoid()}`}>Create New Doc</Link>
     </div>
   );
 }

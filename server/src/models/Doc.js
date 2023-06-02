@@ -4,7 +4,12 @@ const docSchema = new mongoose.Schema(
   {
     _id: { type: String, required: [true, '_id must be required'] },
     data: { type: Object, default: {} },
-    //collaborators: [{}], will implement collaborator after user authentication
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User Id must be required'],
+    },
+    collaborators: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   },
   {
     timestamps: true,

@@ -4,6 +4,7 @@ import 'quill/dist/quill.snow.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
+import useAuth from '../ hooks/useAuth';
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -23,9 +24,15 @@ export default function TextEditor() {
 
   const { docId } = useParams();
 
+  const { token } = useAuth();
+
   //useEffect function to handle socket connection
   useEffect(() => {
-    const s = io('http://localhost:8080');
+    const s = io('http://localhost:8080', {
+      query: {
+        token,
+      },
+    });
     setSocket(s);
 
     return () => {

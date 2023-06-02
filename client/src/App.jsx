@@ -15,14 +15,13 @@ function App() {
   ) : (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<Link to={`docs/${nanoid()}`}>Create New Doc</Link>} /> */}
         <Route path="/*" element={<PublicOutlet />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
         <Route path="/*" element={<PrivateOutlet />}>
           <Route path="docs/:docId" element={<TextEditor />} />
-          <Route path="docs/" element={<Docs />} />
+          <Route path="docs" element={<Docs />} />
         </Route>
       </Routes>
     </Router>

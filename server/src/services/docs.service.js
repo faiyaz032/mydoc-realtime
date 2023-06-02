@@ -1,6 +1,17 @@
 const Doc = require('../models/Doc');
+const AppError = require('../utils/AppError');
 
-module.exports.findDocById = async id => {
+exports.getDocsByUserId = async userId => {
+  if (!userId) return new AppError('User Id must be required to get docs');
+  try {
+    const docs = await Doc.find({ createdBy: userId });
+    return docs;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.findDocById = async id => {
   try {
     if (!id) return;
     const doc = await Doc.findOne({ _id: id });
@@ -10,19 +21,19 @@ module.exports.findDocById = async id => {
   }
 };
 
-module.exports.createDoc = async id => {
+exports.createDoc = async (docId, userId) => {
   try {
-    if (!id) {
+    if (!docId || !userId) {
       console.log(`Id must be required`);
       return;
     }
-    return await Doc.create({ _id: id });
+    return await Doc.create({ _id: docId, createdBy: userId });
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports.updateDoc = async (id, data) => {
+exports.updateDoc = async (id, data) => {
   try {
     if (!id) {
       console.log(`Id must be required`);

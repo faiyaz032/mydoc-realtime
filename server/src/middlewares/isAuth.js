@@ -10,7 +10,7 @@ const AppError = require('../utils/AppError');
 const isAuth = (req, res, next) => {
   const authHeader = `${req.get('Authorization')}`;
 
-  console.log('🚀 ~ file: isAuth.js:12 ~ isAuth ~ authHeader:', authHeader.split(' '))[1];
+  const [, token] = authHeader.split(' ');
 
   if (!token) return next(new AppError(400, 'Please provide a valid JWT token'));
 
