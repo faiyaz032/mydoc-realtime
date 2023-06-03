@@ -10,8 +10,10 @@ const isAuth = require('./middlewares/isAuth');
 //env config
 dotenv.config();
 
+//initialize the app
 const app = express();
 
+//required middlewares
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());

@@ -22,8 +22,10 @@ export default function TextEditor() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
 
+  //extract the docId
   const { docId } = useParams();
 
+  //get the authenticated token
   const { token } = useAuth();
 
   //useEffect function to handle socket connection
