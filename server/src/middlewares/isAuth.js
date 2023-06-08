@@ -8,18 +8,35 @@ const AppError = require('../utils/AppError');
  * @param {express.NextFunction} next
  */
 const isAuth = (req, res, next) => {
+  // Extract the authorization header from the request
   const authHeader = `${req.get('Authorization')}`;
 
+  // Split the authorization header to extract the token
   const [, token] = authHeader.split(' ');
 
-  if (!token) return next(new AppError(400, 'Please provide a valid JWT token'));
+  // Check if a token is provided
+  if (!token) {
+    return next(new AppError(400, 'Please provide a valid JWT token'));
+  }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  if (!decoded) throw new AppError(401, 'Authentication Failed');
+  try {
+    // Verify and decode the JWT token using the JWT_SECRET_KEY
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-  req.user = decoded;
+    // Check if the token is valid and contains decoded information
+    if (!decoded) {
+      throw new AppError(401, 'Authentication Failed');
+    }
 
-  return next();
+    // Set the decoded user information in the request object
+    req.user = decoded;
+
+    // Move to the next middleware
+    return next();
+  } catch (error) {
+    // Forward any error to the error handling middleware
+    throw new AppError(401, 'Authentication Failed');
+  }
 };
 
 module.exports = isAuth;

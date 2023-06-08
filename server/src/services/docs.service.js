@@ -40,5 +40,21 @@ exports.updateDoc = async (id, data) => {
       return;
     }
     return await Doc.findByIdAndUpdate(id, { data });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.addCollaborator = async (collaboratorId, docId) => {
+  try {
+    return await Doc.findByIdAndUpdate(
+      docId,
+      {
+        $push: { collaborators: collaboratorId },
+      },
+      { new: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -18,3 +18,12 @@ exports.getUserByEmail = async email => {
     throw new AppError(500, 'Error creating user');
   }
 };
+
+exports.getUserById = async userId => {
+  try {
+    const user = await User.findById(userId);
+    return user;
+  } catch (error) {
+    throw new AppError(error.statusCode, error.message);
+  }
+};
