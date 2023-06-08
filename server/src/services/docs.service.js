@@ -1,3 +1,5 @@
+//dependencies
+const mongoose = require('mongoose');
 const Doc = require('../models/Doc');
 const AppError = require('../utils/AppError');
 
@@ -54,6 +56,20 @@ exports.addCollaborator = async (collaboratorId, docId) => {
       },
       { new: true }
     );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.findCollaboratedDocs = async userId => {
+  try {
+    const allDocs = await Doc.find({
+      collaborators: {
+        $elemMatch: { $eq: new mongoose.Types.ObjectId(userId) },
+      },
+    });
+
+    return allDocs;
   } catch (error) {
     console.log(error);
   }

@@ -70,6 +70,7 @@ exports.addCollaboratorHandler = async (req, res, next) => {
       return next(new AppError(400, 'Only the creator of this document can add collaborators'));
     }
 
+    // Check if collaborator is already exists on the array
     if (doc.collaborators.includes(collaboratorId)) {
       return next(new AppError(400, 'Collaborator already exists in this document'));
     }
@@ -91,5 +92,21 @@ exports.addCollaboratorHandler = async (req, res, next) => {
 
     // Forward the error to the error handling middleware
     next(new AppError(500, 'Error adding collaborator'));
+  }
+};
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+exports.getCollaboratedDocsHandler = async (req, res, next) => {
+  try {
+    const docs = await docsService.findCollaboratedDocs(req.user._id);
+
+    return res.json({ status: 'success', message: 'Collaborated docs fetched successfully', docs });
+  } catch (error) {
+    return next(new AppError(error.statusCode, error.message));
   }
 };
