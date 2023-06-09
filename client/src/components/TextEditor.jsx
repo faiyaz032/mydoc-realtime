@@ -113,7 +113,7 @@ export default function TextEditor() {
 
   return (
     <>
-      <CollaboratorDropdown />
+      <CollaboratorDropdown docId={docId} />
       <div className="editor-container" ref={wrapperRef}></div>
     </>
   );

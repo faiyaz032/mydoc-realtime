@@ -36,3 +36,17 @@ export const fetchUsers = async () => {
     return error.response.data;
   }
 };
+
+export const addCollaboratorApi = async data => {
+  try {
+    const response = await axiosInstance.post('/docs/collaborator', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
