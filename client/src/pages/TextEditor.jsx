@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import useAuth from '../ hooks/useAuth';
-import CollaboratorDropdown from './CollaboratorDropdown';
+import CollaboratorDropdown from '../components/CollaboratorDropdown';
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -22,6 +22,7 @@ const TOOLBAR_OPTIONS = [
 export default function TextEditor() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
+  const [showCollaborator, setShowCollaborator] = useState(false);
 
   //extract the docId
   const { docId } = useParams();
@@ -41,7 +42,7 @@ export default function TextEditor() {
     return () => {
       s.disconnect();
     };
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (!socket || !quill) return;
@@ -59,7 +60,7 @@ export default function TextEditor() {
     if (!quill || !socket) return;
 
     socket.once('loadDoc', doc => {
-      quill.setContents(doc);
+      quill.setContents(doc.data);
       quill.enable();
     });
 
@@ -100,6 +101,13 @@ export default function TextEditor() {
     };
   }, [quill, socket]);
 
+  useEffect(() => {
+    if (!quill || !socket) return;
+    socket.on('docCreator', () => {
+      setShowCollaborator(true);
+    });
+  }, [quill, socket]);
+
   const wrapperRef = useCallback(wrapper => {
     if (!wrapper) return;
     wrapper.innerHTML = '';
@@ -113,7 +121,7 @@ export default function TextEditor() {
 
   return (
     <>
-      <CollaboratorDropdown docId={docId} />
+      {showCollaborator && <CollaboratorDropdown docId={docId} />}
       <div className="editor-container" ref={wrapperRef}></div>
     </>
   );

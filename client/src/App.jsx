@@ -2,10 +2,10 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import useAuthCheck from './ hooks/useAuthCheck';
 import PrivateOutlet from './components/PrivateOutlet';
 import PublicOutlet from './components/PublicOutlet';
-import TextEditor from './components/TextEditor';
 import Docs from './pages/Docs';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import TextEditor from './pages/TextEditor';
 
 function App() {
   const isAuthChecked = useAuthCheck();

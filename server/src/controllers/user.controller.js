@@ -114,3 +114,21 @@ exports.getUsersHandler = async (req, res, next) => {
     next(new AppError(error.statusCode, error.message));
   }
 };
+
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
+exports.getLoggedInUserHandler = async (req, res, next) => {
+  try {
+    const loggedInUser = await userService.getUserById(req.user._id);
+    return res.status(200).json({
+      status: 'success',
+      message: 'logged in user fetched successfully',
+      loggedInUser,
+    });
+  } catch (error) {
+    next(new AppError(error.statusCode, error.message));
+  }
+};
