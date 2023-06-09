@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import useAuth from '../ hooks/useAuth';
+import CollaboratorDropdown from './CollaboratorDropdown';
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -110,5 +111,10 @@ export default function TextEditor() {
     setQuill(q);
   }, []);
 
-  return <div className="editor-container" ref={wrapperRef}></div>;
+  return (
+    <>
+      <CollaboratorDropdown />
+      <div className="editor-container" ref={wrapperRef}></div>
+    </>
+  );
 }

@@ -27,3 +27,16 @@ exports.getUserById = async userId => {
     throw new AppError(error.statusCode, error.message);
   }
 };
+
+exports.getUsers = async idToExclude => {
+  try {
+    const users = await User.find({ _id: { $ne: idToExclude } }).select({
+      name: 1,
+      email: 1,
+    });
+    return users;
+  } catch (error) {
+    console.log(error);
+    throw new AppError(error.statusCode, error.message);
+  }
+};

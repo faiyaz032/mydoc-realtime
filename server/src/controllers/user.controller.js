@@ -101,4 +101,16 @@ exports.loginHandler = async (req, res, next) => {
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-exports.getUsersHandler = async (req, res, next) => {};
+exports.getUsersHandler = async (req, res, next) => {
+  try {
+    const users = await userService.getUsers(req.user._id);
+    return res.status(200).json({
+      status: 'success',
+      message: 'all users fetched successfully.',
+      users,
+    });
+  } catch (error) {
+    console.log(error);
+    next(new AppError(error.statusCode, error.message));
+  }
+};

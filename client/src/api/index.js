@@ -27,3 +27,12 @@ export const registerApi = async data => {
     return error.response.data;
   }
 };
+
+export const fetchUsers = async () => {
+  try {
+    const response = await axiosInstance.get('/user');
+    return response.data.users;
+  } catch (error) {
+    return error.response.data;
+  }
+};
