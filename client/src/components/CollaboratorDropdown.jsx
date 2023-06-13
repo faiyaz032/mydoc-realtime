@@ -1,7 +1,8 @@
-/* eslint-disable react/prop-types */
+//dependencies
 import { useEffect, useState } from 'react';
 import { addCollaboratorApi, fetchUsers } from '../api';
 
+/* eslint-disable react/prop-types */
 export default function CollaboratorDropdown({ docId }) {
   const [data, setData] = useState([]);
   const [selectedCollaborator, setSelectedCollaborator] = useState(null);

@@ -2,9 +2,10 @@
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import useAuth from '../ hooks/useAuth';
+import useCollaborativeEditing from '../ hooks/useCollaborativeEditing';
 import CollaboratorDropdown from '../components/CollaboratorDropdown';
 
 const TOOLBAR_OPTIONS = [
@@ -30,6 +31,9 @@ export default function TextEditor() {
   //get the authenticated token
   const { token } = useAuth();
 
+  //useNavigate hook for further navigation
+  const navigate = useNavigate();
+
   //useEffect function to handle socket connection
   useEffect(() => {
     const s = io('http://localhost:8080', {
@@ -44,69 +48,7 @@ export default function TextEditor() {
     };
   }, [token]);
 
-  useEffect(() => {
-    if (!socket || !quill) return;
-
-    const interval = setInterval(() => {
-      socket.emit('updateDoc', quill.getContents());
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [quill, socket]);
-
-  useEffect(() => {
-    if (!quill || !socket) return;
-
-    socket.once('loadDoc', doc => {
-      quill.setContents(doc.data);
-      quill.enable();
-    });
-
-    socket.emit('getDoc', docId);
-  }, [quill, socket, docId]);
-
-  //useEffect to handle text-change and emit event to server
-  useEffect(() => {
-    if (!quill || !socket) return;
-
-    const handler = (delta, _, source) => {
-      if (source !== 'user') return;
-      socket.emit('sendUpdatedText', delta);
-    };
-
-    quill.on('text-change', handler);
-
-    //clear the effect
-    return () => {
-      quill.off('text-change', handler);
-    };
-  }, [quill, socket]);
-
-  //useEffect to listen receiveUpdatedChanges from server and update the contents
-  useEffect(() => {
-    if (!quill || !socket) return;
-
-    const handler = delta => {
-      console.log(delta);
-      quill.updateContents(delta);
-    };
-
-    socket.on('receiveUpdatedChanges', handler);
-
-    //clear the effect
-    return () => {
-      socket.off('receiveUpdatedChanges', handler);
-    };
-  }, [quill, socket]);
-
-  useEffect(() => {
-    if (!quill || !socket) return;
-    socket.on('docCreator', () => {
-      setShowCollaborator(true);
-    });
-  }, [quill, socket]);
+  useCollaborativeEditing(socket, quill, docId, navigate, setShowCollaborator);
 
   const wrapperRef = useCallback(wrapper => {
     if (!wrapper) return;
@@ -120,9 +62,9 @@ export default function TextEditor() {
   }, []);
 
   return (
-    <>
+    <div>
       {showCollaborator && <CollaboratorDropdown docId={docId} />}
       <div className="editor-container" ref={wrapperRef}></div>
-    </>
+    </div>
   );
 }

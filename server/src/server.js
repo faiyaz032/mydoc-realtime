@@ -58,11 +58,20 @@ io.on('connection', socket => {
       socket.emit('docCreator');
     }
 
-    // Join the room corresponding to the docId
-    socket.join(docId);
+    if (
+      socket.user._id === doc.createdBy.toHexString() ||
+      doc.collaborators.includes(socket.user._id)
+    ) {
+      console.log('satisfied');
+      // Join the room corresponding to the docId
+      socket.join(docId);
 
-    // Emit an event to load the document in the client
-    socket.emit('loadDoc', doc);
+      // Emit an event to load the document in the client
+      socket.emit('loadDoc', doc);
+    } else {
+      console.log('unsatisfied');
+      socket.emit('notPermitted');
+    }
 
     /**
      * Event handler for sending updated text.
